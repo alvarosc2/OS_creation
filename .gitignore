@@ -1,0 +1,29 @@
+# Build directories
+build/
+bin/
+
+# Object files
+*.o
+*.obj
+
+# Binary files
+*.bin
+*.elf
+
+# Editor backup files
+*~
+*.swp
+*.swo
+.*.swp
+.*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Debugging files
+*.map
+*.lst
+
+# ISO images
+*.iso

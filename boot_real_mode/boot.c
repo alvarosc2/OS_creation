@@ -2,9 +2,9 @@
 
 void putc(char c)
 {
-    volatile char *vid = (volatile char *)0xB8000;
-    vid[0] = c;
-    vid[1] = 0x07; // gris claro sobre negro
+   volatile char *vid = (volatile char *)0xB8000; // dirección de memoria del buffer de video
+   vid[0] = c;
+   vid[1] = 0x07; // gris claro sobre negro
 }
 
 void _start(void)

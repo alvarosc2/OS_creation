@@ -1,7 +1,7 @@
-ENTRY(_start16)
+ENTRY(_start)
 
 SECTIONS {
-    . = 0x7C00;
+    . = 0x7E00;  /* Second sector location */
 
     .text : {
         *(.text*)

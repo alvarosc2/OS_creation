@@ -1,8 +1,6 @@
 [bits 16]
 global _start16
 
-extern _start
-
 _start16:
     cli
     xor ax, ax
@@ -11,12 +9,16 @@ _start16:
     mov ss, ax
     mov sp, 0x7C00
 
-    call _start     ; llama a la función C
+    ; Load sector 2+ from disk to 0x7E00
+    mov ah, 0x02    ; read sectors
+    mov al, 1       ; number of sectors
+    mov ch, 0       ; cylinder
+    mov cl, 2       ; sector (starts at 1, so 2 is second sector)
+    mov dh, 0       ; head
+    mov bx, 0x7E00  ; destination
+    int 0x13
+    
+    jmp 0x0000:0x7E00  ; jump to loaded code
 
-hang:
-    hlt
-    jmp hang
-
-; Boot sector signature
 times 510 - ($ - $$) db 0
 dw 0xAA55
