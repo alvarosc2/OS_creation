@@ -111,7 +111,7 @@ gdt_data:
 gdt_end:
 
 gdt_descriptor:
-    dw gdt_end - gdt_start - 1    ; Size of GDT
+    dw gdt_end - gdt_start - 1     ; Size of GDT
     dd gdt_start                   ; Address of GDT
 
 ; Constants for segment selectors

@@ -1,8 +1,8 @@
 # === Configuración ===
 
-CC = gcc
+CC = clang
 AS = nasm
-LD = ld
+LD = ld.lld
 OBJCOPY = objcopy
 
 CFLAGS = -m16 -ffreestanding -c
