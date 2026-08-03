@@ -151,13 +151,13 @@ void terminal_print(char color, const char* format, ...) {
 
     va_end(args);
 }
+
 void kernel_main() {
     terminal_initialize();
 
     const char mensaje[] = "Hola desde el kernel!";
     terminal_print(0x0F, "Mensaje: %s\n", mensaje);
     terminal_print(0x0A, "Longitud: %u\n", strlen(mensaje));
-    terminal_write_string(mensaje, 0x02);
 
     // Main loop
     while (1) {
