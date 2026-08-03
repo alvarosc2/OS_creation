@@ -1,26 +1,30 @@
-# === Configuración ===
+FILES = ./build/kernel.asm.o ./build/kernel.o
+INCLUDES = -I./src
+FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0
 
-CC = clang
-AS = nasm
-LD = ld.lld
-OBJCOPY = objcopy
+all: ./bin/boot.bin ./bin/kernel.bin
+	rm -rf ./bin/os.bin
+	dd if=./bin/boot.bin >> ./bin/os.bin
+	dd if=./bin/kernel.bin >> ./bin/os.bin
+	dd if=/dev/zero bs=512 count=100 >> ./bin/os.bin
 
-CFLAGS = -m16 -ffreestanding -c
-ASFLAGS = -f elf32
-LDFLAGS = -m elf_i386 -T linker.ld
+./bin/kernel.bin: $(FILES)
+	i686-elf-ld -g -relocatable $(FILES) -o ./build/kernelfull.o
+	i686-elf-gcc $(FLAGS) -T ./src/linker.ld -o ./bin/kernel.bin -ffreestanding -O0 -nostdlib ./build/kernelfull.o
 
-BUILD = build
-TARGET = $(BUILD)/boot.bin
+./bin/boot.bin: ./src/boot/boot.asm
+	nasm -f bin ./src/boot/boot.asm -o ./bin/boot.bin
 
-# === Reglas principales ===
-all:
-	mkdir -p ./build
-	nasm -f bin ./boot.asm -o ./build/boot.bin
+./build/kernel.asm.o: ./src/kernel.asm
+	nasm -f elf32 -g ./src/kernel.asm -o ./build/kernel.asm.o
 
-# === Ejecutar en QEMU ===
-run: $(TARGET)
-	sudo qemu-system-i386 -drive format=raw,file=$(TARGET)
+./build/kernel.o: ./src/kernel.c ./src/kernel.h
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 ./src/kernel.c -o ./build/kernel.o	
 
-# === Limpieza ===
 clean:
-	rm -rf ./build
+	rm -rf ./bin/boot.bin
+	rm -rf ./bin/kernel.bin
+	rm -rf ./bin/os.bin
+	rm -rf ./build/kernel.asm.o
+	rm -rf ${FILES}
+	rm -rf ./build/kernelfull.o
